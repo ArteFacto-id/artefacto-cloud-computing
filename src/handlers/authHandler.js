@@ -43,7 +43,7 @@ module.exports = {
 
       // Mendapatkan data pengguna
       const [userData] = await db.query(
-        'SELECT id, name, email, created_at, update_at FROM users WHERE id = ?',
+        'SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?',
         [result.insertId]
       );
 
@@ -112,9 +112,9 @@ module.exports = {
       const userData = {
         id: user.id,
         name: user.name,
-        email: user.name,
+        email: user.email,
         createdAt: user.created_at,
-        updateAt: user.update_at,
+        updateAt: user.updated_at,
       };
 
       return h
@@ -133,21 +133,37 @@ module.exports = {
     }
   },
 
-  // async getProfile(request, h) {
-  //   try {
-  //     const userId = request.auth.credentials.userId;
+  async getProfile(request, h) {
+    try {
+      const userId = request.auth.credentials.id;
 
-  //     const [users] = await db.query('SELECT id, username, created_at FROM users WHERE id = ?', [userId]);
+      const [users] = await db.query(
+        'SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?',
+        [userId]
+      );
 
-  //     if (users.length === 0) {
-  //       return h.response({ error: 'User not found' }).code(404);
-  //     }
-  //     return h.response(users[0]).code(200);
-  //   } catch (error) {
-  //     console.error(error);
-  //     return h.response({ error: 'Internal server error' }).code(500);
-  //   }
-  // },
+      if (users.length === 0) {
+        return h.response({
+          status: 'error',
+          message: 'Pengguna tidak ditemukan'
+        }).code(404);
+      }
+
+      return h.response({
+        status: 'success',
+        message: 'Profile',
+        data: {
+          user: users[0]
+        },
+      }).code(200);
+    } catch (error) {
+      console.error(error);
+      return h.response({
+        status: 'error',
+        error: 'Internal server error'
+      }).code(500);
+    }
+  },
 
   // async changePassword(request, h) {
   //   try {
