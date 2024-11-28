@@ -1,4 +1,4 @@
-const jwt = require('@hapi/jwt');
+const { token } = require('@hapi/jwt');
 
 const validateToken = async (request, h) => {
   try {
@@ -11,17 +11,23 @@ const validateToken = async (request, h) => {
         .takeover();
     }
 
-    const token = request.headers.authorization.replace('Bearer', '');
+    const jwtToken = request.headers.authorization.replace('Bearer ', '');
 
     try {
-      const decoded = jwt.token.decode(token);
-      jwt.token.verify(decoded, process.env.JWT_SECRET);
+      const decoded = token.decode(jwtToken);
+      // Parse payload
+      const payload = decoded.decoded.payload;
+      console.log('Decoded Payload:', payload);
 
+      // Verify token
+      token.verify(decoded, process.env.JWT_SECRET);
+
+      // Set credentials
       request.auth = {
         credentials: {
-          id: decoded.decoded.payload.id,
-          email: decoded.decoded.payload.email
-        }
+          id: payload.id,
+          email: payload.email,
+        },
       };
 
       return h.continue;

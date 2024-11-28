@@ -1,6 +1,6 @@
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
-const jwt = require('@hapi/jwt');
+const { token } = require('@hapi/jwt');
 
 module.exports = {
   async register(request, h) {
@@ -98,7 +98,7 @@ module.exports = {
       }
 
       // Generate JWT token
-      const token = jwt.token.generate(
+      const jwtToken = token.generate(
         {
           id: user.id,
           email: user.email,
@@ -123,7 +123,7 @@ module.exports = {
           message: 'Berhasil Login',
           data: {
             user: userData,
-            token,
+            jwtToken,
           },
         })
         .code(200);
