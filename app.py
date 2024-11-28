@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 
 # GCS bucket details
-BUCKET_NAME = "artefaccto-model"
+BUCKET_NAME = "artefacto-model"
 MODEL_FILENAME = "latest/ArteFacto_model.keras"
 LOCAL_MODEL_PATH = "/tmp/ArteFacto_model.keras" 
 
