@@ -17,7 +17,6 @@ const validateToken = async (request, h) => {
       const decoded = token.decode(jwtToken);
       // Parse payload
       const payload = decoded.decoded.payload;
-      console.log('Decoded Payload:', payload);
 
       // Verify token
       token.verify(decoded, process.env.JWT_SECRET);
