@@ -13,11 +13,10 @@ COPY requirements.txt ./
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Salin seluruh isi folder proyek ke dalam container
-COPY . .
+COPY . /app
 
 # Expose port untuk Flask
-EXPOSE 5000
+EXPOSE 8080
 
 # Perintah untuk menjalankan aplikasi menggunakan Gunicorn
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:5000", "app:app", "--reload"]
+CMD ["gunicorn", "app:app", "--workers=1", "--threads=8", "--bind=0.0.0.0:8080"]

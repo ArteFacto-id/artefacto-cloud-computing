@@ -3,17 +3,33 @@ import numpy as np
 import tensorflow as tf
 from flask import Flask, request, jsonify
 from PIL import Image as PILImage
+from google.cloud import storage
 
 app = Flask(__name__)
 
-# Load the pre-trained model
-MODEL_PATH = "model/[NAMA MODEL].keras"
+
+# GCS bucket details
+BUCKET_NAME = "artefaccto-model"
+MODEL_FILENAME = "latest/ArteFacto_model.keras"
+LOCAL_MODEL_PATH = "/tmp/ArteFacto_model.keras" 
+
+def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name):
+    """
+    Downloads a file from GCS bucket.
+    """
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+    blob.download_to_filename(destination_file_name)
+    print(f"Model downloaded to {destination_file_name}")
+
+# Download and load model
 try:
-    model = tf.keras.models.load_model(MODEL_PATH)
+    download_model_from_gcs(BUCKET_NAME, MODEL_FILENAME, LOCAL_MODEL_PATH)
+    model = tf.keras.models.load_model(LOCAL_MODEL_PATH)
     print("Model loaded successfully!")
 except Exception as e:
     print(f"Error loading model: {e}")
-    model = None
 
 # Define class labels
 classes = [
