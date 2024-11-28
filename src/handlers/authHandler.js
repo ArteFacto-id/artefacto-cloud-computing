@@ -61,7 +61,7 @@ module.exports = {
       return h
         .response({
           status: 'error',
-          error: 'Internal server error',
+          message: 'Internal server error',
         })
         .code(500);
     }
@@ -79,7 +79,7 @@ module.exports = {
         return h
           .response({
             status: 'error',
-            error: 'Email atau password salah',
+            message: 'Email atau password salah',
           })
           .code(401);
       }
@@ -92,7 +92,7 @@ module.exports = {
         return h
           .response({
             status: 'error',
-            error: 'Email atau password salah',
+            message: 'Email atau password salah',
           })
           .code(401);
       }
@@ -100,8 +100,8 @@ module.exports = {
       // Generate JWT token
       const token = jwt.token.generate(
         {
-          userId: user.id,
-          username: user.email,
+          id: user.id,
+          email: user.email,
         },
         process.env.JWT_SECRET,
         {
@@ -129,7 +129,10 @@ module.exports = {
         .code(200);
     } catch (error) {
       console.error(error);
-      return h.response({ error: 'Internal server error' }).code(500);
+      return h.response({
+        status: 'error',
+        message: 'Internal server error'
+      }).code(500);
     }
   },
 
@@ -151,7 +154,7 @@ module.exports = {
 
       return h.response({
         status: 'success',
-        message: 'Profile',
+        message: 'Profile pengguna',
         data: {
           user: users[0]
         },
@@ -160,7 +163,7 @@ module.exports = {
       console.error(error);
       return h.response({
         status: 'error',
-        error: 'Internal server error'
+        message: 'Internal server error'
       }).code(500);
     }
   },

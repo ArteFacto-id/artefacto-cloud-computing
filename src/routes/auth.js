@@ -1,4 +1,4 @@
-const authController = require('../handlers/authHandler');
+const authHandler = require('../handlers/authHandler');
 const validateToken = require('../middleware/authMiddleware');
 const { registerSchema, loginSchema } = require('../schema/schema');
 
@@ -6,7 +6,7 @@ module.exports = [
   {
     method: 'POST',
     path: '/auth/register',
-    handler: authController.register,
+    handler: authHandler.register,
     options: {
       validate: {
         payload: registerSchema
@@ -16,7 +16,7 @@ module.exports = [
   {
     method: 'POST',
     path: '/auth/login',
-    handler: authController.login,
+    handler: authHandler.login,
     options: {
       validate: {
         payload: loginSchema
@@ -26,7 +26,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/auth/profile',
-    handler: authController.getProfile,
+    handler: authHandler.getProfile,
     options: {
       pre: [{ method: validateToken }]
     }

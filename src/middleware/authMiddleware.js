@@ -11,7 +11,7 @@ const validateToken = async (request, h) => {
         .takeover();
     }
 
-    const token = request.headers.authorization.replace('Bearer ', '');
+    const token = request.headers.authorization.replace('Bearer', '');
 
     try {
       const decoded = jwt.token.decode(token);
@@ -41,7 +41,7 @@ const validateToken = async (request, h) => {
       message: 'Internal server serror'
     })
       .code(500)
-      .code();
+      .takeover();
 
   }
 };
