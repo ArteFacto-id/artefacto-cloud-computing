@@ -4,7 +4,10 @@ import tensorflow as tf
 from flask import Flask, request, jsonify
 from PIL import Image as PILImage
 from google.cloud import storage
-import jwt  #
+import jwt
+
+#untuk development gunakan file .env , jangan lupa install packagenya
+# from dotenv import load_dotenv
 
 app = Flask(__name__)
 
@@ -12,6 +15,9 @@ app = Flask(__name__)
 BUCKET_NAME = "artefacto-model"
 MODEL_FILENAME = "latest/ArteFacto_model.keras"
 LOCAL_MODEL_PATH = "/tmp/ArteFacto_model.keras"
+
+# gunakan jika dalam development
+# load_dotenv()
 
 # JWT secret (sama dengan yang digunakan di backend JS)
 JWT_SECRET = os.getenv("JWT_SECRET")
@@ -95,5 +101,5 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=5000)
+    # app.run(host='0.0.0.0', port=8080)
     app.run()

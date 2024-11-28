@@ -3,5 +3,4 @@ flask
 pillow
 gunicorn
 google-cloud-storage
-python-dotenv
 pyjwt
