@@ -5,20 +5,15 @@ from flask import Flask, request, jsonify
 from PIL import Image as PILImage
 from google.cloud import storage
 import jwt
-
-#untuk development gunakan file .env , jangan lupa install packagenya
-# from dotenv import load_dotenv
+import time
 
 app = Flask(__name__)
 
 # GCS bucket details
-BUCKET_NAME = "artefacto-model"
-MODEL_FILENAME = "latest/ArteFacto_model.keras"
-LOCAL_MODEL_PATH = "/tmp/ArteFacto_model.keras"
-
-# gunakan jika dalam development
-# load_dotenv()
-
+MODEL_BUCKET_NAME = os.getenv("MODEL_BUCKET_NAME")
+MODEL_FILENAME = os.getenv("MODEL_FILENAME")
+LOCAL_MODEL_PATH = os.getenv("LOCAL_MODEL_PATH")
+IMAGE_BUCKET_NAME = MODEL_BUCKET_NAME
 # JWT secret (sama dengan yang digunakan di backend JS)
 JWT_SECRET = os.getenv("JWT_SECRET")
 
@@ -32,7 +27,7 @@ def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name
 
 # Download and load model
 try:
-    download_model_from_gcs(BUCKET_NAME, MODEL_FILENAME, LOCAL_MODEL_PATH)
+    download_model_from_gcs(MODEL_BUCKET_NAME, MODEL_FILENAME, LOCAL_MODEL_PATH)
     model = tf.keras.models.load_model(LOCAL_MODEL_PATH)
     print("Model loaded successfully!")
 except Exception as e:
@@ -50,6 +45,18 @@ def preprocess_image(image):
     image = np.array(image) / 255.0  # Normalize pixel values
     image = np.expand_dims(image, axis=0)  # Add batch dimension
     return image
+
+def upload_to_gcs(file_stream, bucket_name, destination_blob_name, content_type):
+    """Upload a file to Google Cloud Storage."""
+    try:
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(destination_blob_name)
+        blob.upload_from_file(file_stream, content_type=content_type)
+        print(f"File uploaded to gs://{bucket_name}/{destination_blob_name}")
+    except Exception as e:
+        print(f"Error uploading to GCS: {e}")
+        raise
 
 # Middleware untuk memvalidasi JWT
 def validate_jwt(func):
@@ -72,7 +79,7 @@ def validate_jwt(func):
     return wrapper
 
 @app.route('/predict', methods=['POST'])
-@validate_jwt  # Tambahkan middleware validasi JWT
+@validate_jwt
 def predict():
     """Handle prediction requests."""
     if 'file' not in request.files:
@@ -90,6 +97,22 @@ def predict():
         if 0 <= prediction_index < len(classes):
             predicted_class = classes[prediction_index]
             confidence = float(prediction[prediction_index])
+
+            # Generate custom filename
+            original_ext = file.filename.split('.')[-1]
+            timestamp = int(time.time())
+            confidence_percent = int(confidence * 100)
+            custom_filename = f"{predicted_class}-{confidence_percent}-{timestamp}.{original_ext}"
+
+            # Upload file to GCS
+            file.stream.seek(0)  # Reset file pointer before upload
+            upload_to_gcs(
+                file.stream,
+                IMAGE_BUCKET_NAME,
+                f"images/{custom_filename}",
+                content_type=f"image/{original_ext.lower()}"
+            )
+
             return jsonify({
                 "prediction": predicted_class,
                 "confidence": confidence
@@ -101,5 +124,4 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=8080)
     app.run()
