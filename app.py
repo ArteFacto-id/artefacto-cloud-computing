@@ -4,19 +4,20 @@ import tensorflow as tf
 from flask import Flask, request, jsonify
 from PIL import Image as PILImage
 from google.cloud import storage
+import jwt  #
 
 app = Flask(__name__)
 
-
 # GCS bucket details
-BUCKET_NAME = "artefaccto-model"
+BUCKET_NAME = "artefacto-model"
 MODEL_FILENAME = "latest/ArteFacto_model.keras"
-LOCAL_MODEL_PATH = "/tmp/ArteFacto_model.keras" 
+LOCAL_MODEL_PATH = "/tmp/ArteFacto_model.keras"
+
+# JWT secret (sama dengan yang digunakan di backend JS)
+JWT_SECRET = os.getenv("JWT_SECRET")
 
 def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name):
-    """
-    Downloads a file from GCS bucket.
-    """
+    """Downloads a file from GCS bucket."""
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_blob_name)
@@ -44,7 +45,28 @@ def preprocess_image(image):
     image = np.expand_dims(image, axis=0)  # Add batch dimension
     return image
 
+# Middleware untuk memvalidasi JWT
+def validate_jwt(func):
+    def wrapper(*args, **kwargs):
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return jsonify({"error": "Missing or invalid Authorization header"}), 401
+
+        token = auth_header.split(" ")[1]
+        try:
+            decoded = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            request.user = decoded  # Simpan informasi user ke dalam request
+            return func(*args, **kwargs)
+        except jwt.ExpiredSignatureError:
+            return jsonify({"error": "Token has expired"}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({"error": "Invalid token"}), 401
+
+    wrapper.__name__ = func.__name__
+    return wrapper
+
 @app.route('/predict', methods=['POST'])
+@validate_jwt  # Tambahkan middleware validasi JWT
 def predict():
     """Handle prediction requests."""
     if 'file' not in request.files:
@@ -73,5 +95,4 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=5000)
     app.run()

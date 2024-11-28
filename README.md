@@ -1,2 +1,2 @@
-# Deployment Kedua
-Model sudah dimuat dari GCS Bucket, sehiungga memudahkan ketika melakukan update model
+# Deployment Ketiga
+Menambahkan keamana dengan JWT
