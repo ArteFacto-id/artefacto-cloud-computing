@@ -87,7 +87,7 @@ module.exports = {
 
       const user = users[0];
 
-      // verifikasi password
+      // Verifikasi password pengguna
       const isValid = await bcrypt.compare(password, user.password);
       if (!isValid) {
         return h
@@ -173,17 +173,43 @@ module.exports = {
 
   async changePassword(request, h) {
     try {
-      const { email, password, passConfirmation } = request.payload;
+      const { email, password, newPassword, passConfirmation } = request.payload;
 
-      // validasi password confirmation
-      if (password !== passConfirmation) {
+      // Mendapatkan pengguna dengan email
+      const [isUsers] = await db.query('SELECT * FROM users WHERE email = ?', [
+        email,
+      ]);
+      if (isUsers.length === 0) {
+        return h
+          .response({
+            status: 'error',
+            message: 'Email atau password salah',
+          })
+          .code(401);
+      }
+
+      const user = isUsers[0];
+
+      // Verifikasi password lama pengguna
+      const isValid = await bcrypt.compare(password, user.password);
+      if (!isValid) {
+        return h
+          .response({
+            status: 'error',
+            message: 'Password pengguna saat ini salah',
+          })
+          .code(401);
+      }
+
+      // Validasi password baru dengan konfirmasi
+      if (newPassword !== passConfirmation) {
         return h.response({
           status: 'error',
           message: 'Password dan konfirmasi password tidak sesuai'
         }).code(400);
       }
 
-      // mendapatkan user melalui email
+      // Mendapatkan pengguna melalui email
       const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
       if (users.length === 0) {
         return h.response({
@@ -192,18 +218,18 @@ module.exports = {
         }).code(404);
       }
 
-      // hash password baru
+      // Hash password baru
       const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-      // update password
+      // Update password
       await db.query(
         'UPDATE  users SET password = ? WHERE email = ?',
         [hashedPassword, email]
       );
       return h.response({
         status: 'success',
-        message: 'Update password berhasil',
+        message: 'password berhasil diperbarui',
         data: 'null'
       }).code(200);
 
@@ -219,12 +245,12 @@ module.exports = {
   async changeNameProfile(request, h) {
     try {
       const userId = request.auth.credentials.id;
-      const { name } = request.payload;
+      const { newName } = request.payload;
 
       // Update nama pengguna
       await db.query(
         'UPDATE users SET name = ? WHERE id = ?',
-        [name, userId]
+        [newName, userId]
       );
 
       // Mendapatkan update data pengguna
@@ -253,7 +279,7 @@ module.exports = {
   async changeEmailProfile(request, h) {
     try {
       const userId = request.auth.credentials.id;
-      const { email, password } = request.payload;
+      const { newEmail, password } = request.payload;
 
       // Mendapatkan data pengguna saat ini
       const [users] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
@@ -264,7 +290,7 @@ module.exports = {
         }).code(404);
       }
 
-      // Verifikasi password
+      // Verifikasi password pengguna
       const isValid = await bcrypt.compare(password, users[0].password);
       if (!isValid) {
         return h.response({
@@ -273,8 +299,8 @@ module.exports = {
         }).code(401);
       }
 
-      //Check jika email sudah tersedia
-      const [existing] = await db.query('SELECT id FROM users WHERE email = ? AND id != ?', [email, userId]);
+      // Check jika email sudah tersedia
+      const [existing] = await db.query('SELECT id FROM users WHERE email = ? AND id != ?', [newEmail, userId]);
       if (existing.length > 0) {
         return h.response({
           status: 'error',
@@ -285,7 +311,7 @@ module.exports = {
       // Update email pengguna
       await db.query(
         'UPDATE users SET email = ? WHERE id = ?',
-        [email, userId]
+        [newEmail, userId]
       );
 
       // Mendapatkan update data pengguna

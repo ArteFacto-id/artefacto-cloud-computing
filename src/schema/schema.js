@@ -40,12 +40,16 @@ const resetPasswordSchema = Joi.object({
     'string.empty': 'Email tidak boleh kosong',
     'any.required': 'Email wajib diisi'
   }),
-  password: Joi.string().min(8).required().messages({
+  password: Joi.string().required().messages({
+    'string.empty': 'Password tidak boleh kosong',
+    'any.required': 'Password wajib diisi'
+  }),
+  newPassword: Joi.string().min(8).required().messages({
     'string.min': 'Password minimal 8 karakter',
     'string.empty': 'Email tidak boleh kosong',
     'any.required': 'Password wajib diisi'
   }),
-  passConfirmation: Joi.string().required().valid(Joi.ref('password')).messages({
+  passConfirmation: Joi.string().required().valid(Joi.ref('newPassword')).messages({
     'any.only': 'Konfirmasi password tidak cocok',
     'string.empty': 'Konfirmasi password tidak boleh kosong',
     'any.required': 'Konfirmasi password wajib diisi'
@@ -53,14 +57,14 @@ const resetPasswordSchema = Joi.object({
 });
 
 const updateProfileSchema = Joi.object({
-  name: Joi.string().required().messages({
+  newName: Joi.string().required().messages({
     'string.empty': 'Nama tidak boleh kosong',
     'any.required': 'Nama wajib diisi'
   })
 });
 
 const updateEmailSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  newEmail: Joi.string().email().required().messages({
     'string.eamil': 'Format email tidak valid',
     'string.empty': 'Email tidak boleh kosong',
     'any.required': 'Email wajib diisi'
