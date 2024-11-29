@@ -56,6 +56,7 @@ module.exports = {
           },
         })
         .code(201);
+
     } catch (error) {
       console.error(error);
       return h
@@ -127,6 +128,7 @@ module.exports = {
           },
         })
         .code(200);
+
     } catch (error) {
       console.error(error);
       return h.response({
@@ -159,6 +161,7 @@ module.exports = {
           user: users[0]
         },
       }).code(200);
+
     } catch (error) {
       console.error(error);
       return h.response({
@@ -168,35 +171,144 @@ module.exports = {
     }
   },
 
-  // async changePassword(request, h) {
-  //   try {
-  //     const userId = request.auth.credentials.userId;
-  //     const { oldPassword, newPassword } = request.payload;
+  async changePassword(request, h) {
+    try {
+      const { email, password, passConfirmation } = request.payload;
 
-  //     // mendapatkan user
-  //     const [users] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
-  //     if (users.length === 0) {
-  //       return h.response({ error: 'User not found' }).code(404);
-  //     }
+      // validasi password confirmation
+      if (password !== passConfirmation) {
+        return h.response({
+          status: 'error',
+          message: 'Password dan konfirmasi password tidak sesuai'
+        }).code(400);
+      }
 
-  //     const user = users[0];
+      // mendapatkan user melalui email
+      const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+      if (users.length === 0) {
+        return h.response({
+          status: 'error',
+          message: 'Email tidak ditemukan'
+        }).code(404);
+      }
 
-  //     // verifikasi password lama
-  //     const isValid = await bcrypt.compare(oldPassword, user.password);
-  //     if (!isValid) {
-  //       return h.response({ erorr: 'invalid old password' }).code(401);
-  //     }
+      // hash password baru
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  //     // hash password baru
-  //     const saltRounds = 10;
-  //     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+      // update password
+      await db.query(
+        'UPDATE  users SET password = ? WHERE email = ?',
+        [hashedPassword, email]
+      );
+      return h.response({
+        status: 'success',
+        message: 'Update password berhasil',
+        data: 'null'
+      }).code(200);
 
-  //     // update password
-  //     await db.query('UPDATE  users SET password = ? WHERE id = ?', [hashedPassword, userId]);
-  //     return h.response({ message: 'Password updated successfully' }).code(200);
-  //   } catch (error) {
-  //     console.error(error);
-  //     return h.response({ error: 'Internal server error' }).code(500);
-  //   }
-  // }
+    } catch (error) {
+      console.error(error);
+      return h.response({
+        status: 'error',
+        message: 'Internal server error'
+      }).code(500);
+    }
+  },
+
+  async changeNameProfile(request, h) {
+    try {
+      const userId = request.auth.credentials.id;
+      const { name } = request.payload;
+
+      // Update nama pengguna
+      await db.query(
+        'UPDATE users SET name = ? WHERE id = ?',
+        [name, userId]
+      );
+
+      // Mendapatkan update data pengguna
+      const [users] = await db.query(
+        'SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?',
+        [userId]
+      );
+
+      return h.response({
+        status: 'succes',
+        message: 'Profile berhasil diperbarui',
+        data: {
+          user: users[0]
+        },
+      }).code(200);
+
+    } catch (error) {
+      console.error(error);
+      return h.response({
+        status: 'error',
+        message: 'Internal server error'
+      }).code(500);
+    }
+  },
+
+  async changeEmailProfile(request, h) {
+    try {
+      const userId = request.auth.credentials.id;
+      const { email, password } = request.payload;
+
+      // Mendapatkan data pengguna saat ini
+      const [users] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+      if (users.length === 0) {
+        return h.response({
+          status: 'error',
+          message: 'Pengguna tidak ditemukan'
+        }).code(404);
+      }
+
+      // Verifikasi password
+      const isValid = await bcrypt.compare(password, users[0].password);
+      if (!isValid) {
+        return h.response({
+          status: 'error',
+          message: 'Password salah'
+        }).code(401);
+      }
+
+      //Check jika email sudah tersedia
+      const [existing] = await db.query('SELECT id FROM users WHERE email = ? AND id != ?', [email, userId]);
+      if (existing.length > 0) {
+        return h.response({
+          status: 'error',
+          message: 'Email sudah digunakan'
+        }).code(400);
+      }
+
+      // Update email pengguna
+      await db.query(
+        'UPDATE users SET email = ? WHERE id = ?',
+        [email, userId]
+      );
+
+      // Mendapatkan update data pengguna
+      const [updatedUser] = await db.query(
+        'SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?', [userId]
+      );
+
+      return h.response({
+        status: 'succes',
+        message: 'Email berhasil diperbarui',
+        data: {
+          user: updatedUser[0]
+        },
+      }).code(200);
+
+    } catch (error) {
+      console.error(error);
+      return h.response({
+        status: 'error',
+        message: 'Internal server error'
+      }).code(500);
+    }
+  }
 };
+
+

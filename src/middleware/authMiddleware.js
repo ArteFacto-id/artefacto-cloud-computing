@@ -15,13 +15,13 @@ const validateToken = async (request, h) => {
 
     try {
       const decoded = token.decode(jwtToken);
-      // Parse payload
+      // menguraikan payload
       const payload = decoded.decoded.payload;
 
-      // Verify token
+      // verifikasi token
       token.verify(decoded, process.env.JWT_SECRET);
 
-      // Set credentials
+      // set credentials
       request.auth = {
         credentials: {
           id: payload.id,
