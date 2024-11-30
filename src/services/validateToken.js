@@ -51,4 +51,5 @@ const validateToken = async (request, h) => {
   }
 };
 
+
 module.exports = validateToken;

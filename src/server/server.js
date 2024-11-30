@@ -1,6 +1,7 @@
-const { artifactRoute } = require('./routes');
+const routes = require('./routes');
 const Hapi = require('@hapi/hapi');
 require('dotenv').config();
+const validateToken = require('../services/validateToken');
 
 const init = async () => {
   const server = Hapi.server({
@@ -11,7 +12,10 @@ const init = async () => {
     }
   });
 
-  server.route(artifactRoute);
+  server.ext('onPreHandler', validateToken);
+
+  
+  server.route(routes);
 
   await server.start();
   console.log(`Server berjalan pada ${server.info.uri}`);

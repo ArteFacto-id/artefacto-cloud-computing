@@ -1,12 +1,26 @@
-const validateToken = require('../services/validateToken');
-const {} = require('./handler')
+const { getAllTemplesHandler, getTemplesByIdHandler, getAllArtifactsHandler, getArtifactsByIdHandler } = require('./handler');
 
-const artifactRoute = [
-    {
-        method:'GET',
-        path:'/temples/{templeId}/artifact',
-        handler:()=>{}
-    }
+
+const routes = [
+  {
+    method:'GET',
+    path:'/temples',
+    handler: getAllTemplesHandler,
+  },
+  {
+    method:'GET',
+    path:'/temples/{templeId}',
+    handler:getTemplesByIdHandler,
+  },
+  {
+    method:'GET',
+    path:'/temples/{templeId}/artifacts',
+    handler:getAllArtifactsHandler,
+  }, {
+    method:'GET',
+    path:'/temples/{templeId}/artifacts/{artifactId}',
+    handler:getArtifactsByIdHandler,
+  }
 ];
 
-module.exports = artifactRoute;
+module.exports = routes;
