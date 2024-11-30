@@ -6,6 +6,7 @@ from PIL import Image as PILImage
 from google.cloud import storage
 import jwt
 import time
+import shortuuid
 
 app = Flask(__name__)
 
@@ -100,9 +101,9 @@ def predict():
 
             # Generate custom filename
             original_ext = file.filename.split('.')[-1]
-            timestamp = int(time.time())
+            unique_id = shortuuid.ShortUUID().random(length=10)
             confidence_percent = int(confidence * 100)
-            custom_filename = f"{predicted_class}-{confidence_percent}-{timestamp}.{original_ext}"
+            custom_filename = f"{predicted_class}-{confidence_percent}-{unique_id}.{original_ext}"
 
             # Upload file to GCS
             file.stream.seek(0)  # Reset file pointer before upload
