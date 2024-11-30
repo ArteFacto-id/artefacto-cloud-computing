@@ -1,4 +1,4 @@
-const { artifactRoute } = require('./routes/artifactRoute');
+const { artifactRoute } = require('./routes');
 const Hapi = require('@hapi/hapi');
 require('dotenv').config();
 
