@@ -1,9 +1,9 @@
-const templeRoutes = require('./templeRoutes');
-const artifactRoutes = require('./artifactRoutes');
 const authRoutes = require('./auth');
+const ticketRoutes = require('./tickets');
+const transactionRoutes = require('./transactions');
 
 module.exports = [
-  ...templeRoutes,
-  ...artifactRoutes,
-  ...authRoutes
+  ...authRoutes,
+  ...ticketRoutes,
+  ...transactionRoutes
 ];

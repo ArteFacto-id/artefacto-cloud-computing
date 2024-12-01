@@ -75,6 +75,28 @@ const updateEmailSchema = Joi.object({
   })
 });
 
+const createTransactionSchema = Joi.object({
+  ticketId: Joi.number().required().messages({
+    'number.base': 'ID tiket harus berupa angka',
+    'any.required': 'ID tiket wajib diisi'
+  }),
+  validDate: Joi.date().min('now').required().messages({
+    'date.base': 'Tanggal tidak valid',
+    'date.min': 'Tanggal tidak boleh kurang dari hari ini',
+    'any.required': 'Tanggal wajib diisi'
+  }),
+  ticketQuantity: Joi.number().min(1).required().messages({
+    'number.base': 'Jumlah tiket harus berupa angka',
+    'number.min': 'Jumlah tiket minimal 1',
+    'any.required': 'Jumlah tiket wajib diisi'
+  }),
+  paymentMethod: Joi.string().valid('bank_transfer', 'credit_card', 'e_wallet').required().messages({
+    'string.base': 'Metode pembayaran tidak valid',
+    'any.only': 'Metode pembayaran tidak valid',
+    'any.required': 'Metode pembayaran wajib diisi'
+  })
+});
+
 
 
 module.exports = {
@@ -82,5 +104,6 @@ module.exports = {
   loginSchema,
   resetPasswordSchema,
   updateProfileSchema,
-  updateEmailSchema
+  updateEmailSchema,
+  createTransactionSchema
 };
