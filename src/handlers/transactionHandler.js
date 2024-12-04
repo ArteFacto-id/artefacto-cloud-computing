@@ -1,5 +1,5 @@
 const db = require('../config/database');
-const transactions = require('../routes/transactions');
+const crypto = require('crypto');
 
 module.exports = {
   async createTransaction(request, h) {
@@ -36,6 +36,17 @@ module.exports = {
         VALUES (?, ?, ?, ?, ?, ?)
       `, [userId, ticketId, validDate, ticketQuantity, totalPrice, paymentMethod]);
 
+      // Generate kode unik untuk setiap tiket pengguna
+      const transactionsId = result.insertId;
+      for (let i = 0; i < ticketQuantity; i++) {
+        const uniqueCode = crypto.randomBytes(5).toString('hex');
+        await db.query(`
+          INSERT INTO owned_tickets
+          (transaction_id, ticket_id, unique_code, usage_status)
+          VALUES (?, ?, ?, 'unused')  
+        `, [transactionsId, ticketId, uniqueCode]);
+      }
+
       // Quota tiket diperbarui
       await db.query(`
         UPDATE tickets
@@ -43,6 +54,7 @@ module.exports = {
         WHERE id = ?
       `, [ticketQuantity, ticketQuantity, ticketId]);
 
+      // Mendapatkan detail transaksi
       const [transactions] = await db.query(`
         SELECT t.*, u.name as user_name, tk.price as ticket_price, tmp.name as temple_name
         FROM transactions t
@@ -73,7 +85,7 @@ module.exports = {
       const { id } = request.params;
       const userId = request.auth.credentials.id;
 
-      const [transaction] = await db.query(`
+      const [transactions] = await db.query(`
         SELECT t.*, u.name as user_name, tk.price as ticket_price, tmp.name as temple_name
         FROM transactions t
         JOIN users u ON t.user_id = u.id
