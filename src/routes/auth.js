@@ -1,6 +1,4 @@
-const { options } = require('joi');
 const authHandler = require('../handlers/authHandler');
-const validateToken = require('../middleware/authMiddleware');
 const { registerSchema, loginSchema, resetPasswordSchema, updateProfileSchema, updateEmailSchema } = require('../schema/schema');
 
 module.exports = [
@@ -28,16 +26,12 @@ module.exports = [
     method: 'GET',
     path: '/auth/profile',
     handler: authHandler.getProfile,
-    options: {
-      pre: [{ method: validateToken }]
-    }
   },
   {
     method: 'PUT',
     path: '/auth/changePassword',
     handler: authHandler.changePassword,
     options: {
-      pre: [{ method: validateToken }],
       validate: {
         payload: resetPasswordSchema
       }
@@ -48,7 +42,6 @@ module.exports = [
     path: '/auth/profile/changeName',
     handler: authHandler.changeNameProfile,
     options: {
-      pre: [{ method: validateToken }],
       validate: {
         payload: updateProfileSchema
       }
@@ -59,7 +52,6 @@ module.exports = [
     path: '/auth/profile/changeEmail',
     handler: authHandler.changeEmailProfile,
     options: {
-      pre: [{ method: validateToken }],
       validate: {
         payload: updateEmailSchema
       }

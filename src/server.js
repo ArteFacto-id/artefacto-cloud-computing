@@ -1,5 +1,6 @@
 const Hapi = require('@hapi/hapi');
 const routes = require('./routes');
+const validateToken = require('./middleware/authMiddleware');
 require('dotenv').config();
 
 const init = async () => {
@@ -7,13 +8,17 @@ const init = async () => {
     port: process.env.PORT,
     host: process.env.DB_HOST,
     routes: {
-      cors: true,
-      validate: {
-        failAction: async (request, h, err) => {
-          throw err;
-        }
-      }
+      cors: true
     }
+  });
+
+  // mengecualikan register dan login
+  server.ext('onPreHandler', async (request, h) => {
+    if (request.path === '/auth/register' || request.path === '/auth/login') {
+      return h.continue;
+    }
+
+    return validateToken(request, h);
   });
 
   server.route(routes);
@@ -23,8 +28,8 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
-  console.log(err);
-  process.exit(err);
+  console.error(err);
+  process.exit(1);
 });
 
 init();
