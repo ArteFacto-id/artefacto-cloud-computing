@@ -1,4 +1,4 @@
-# CC Repository - Destinology (Team CH2-PS397)
+# ArteFacto Backend Service 1
 
 Member of Cloud Computing
 | Member | Student ID | University |
@@ -47,29 +47,6 @@ User Data Management is a crucial part of our API, designed to give users full c
 - **'/users/changePassword'**
   Update the current user's password.
 
-## Models
-
-### Itinerary Planner
-
-The Itinerary Planner is an innovative feature of our API, designed to simplify and enhance the travel planning experience. It offers users the ability to create their travel itineraries with ease. This planner not only assists in organizing trips but also includes functionality for automatic itinerary generation based on user preferences such as city, duration, and price. The Itinerary Planner is an indispensable tool for travelers seeking a hassle-free and personalized way to plan their journeys.
-
-### Endpoints
-
-- **'/models/itinerary'**
-  Automatically generate a travel itinerary based on user preferences.
-
-- **'/models/itinerary-generate'**
-  Regenerating parts of a travel itinerary that do not align with the user's preferences
-
-### Landmark Prediction
-
-Landmark Prediction is an advanced feature of our API that leverages image recognition to identify and provide detailed information about landmarks. This tool is designed for users who wish to learn more about specific landmarks or explore their surroundings through images. By analyzing input from the user, it offers insightful and accurate information about various landmarks, enhancing the user's understanding and experience of different cultural and historical sites.
-
-### Endpoints
-
-- **'/models/landmark'**
-  Predict and provide details about landmarks in images or descriptions.
-
 ## Others
 
 - **'/auth/logout'**
@@ -93,60 +70,3 @@ Here is the detailed specification of the compute engine used for deployment.
 
 To set up the environment required by the APIs and AI-Model that will be deployed, follow this step.
 
-1.  Create a VM Instance with the exact specification above
-2.  Create a firewall to enable tcp in port:8000
-3.  Run this code
-
-```
-! sudo apt update
-```
-
-```
-! sudo apt install git
-```
-
-```
-! sudo apt-get install python3-pip
-```
-
-```
-! git clone https://github.com/dhiyarisalah/destinology.git
-```
-
-```
-! cd destinology
-```
-
-```
-! pip3 install -r requirements.txt
-```
-
-4. Create/Run Session Manager
-
-```
-! tmux new -s session
-```
-
-```
-! tmux attach
-```
-
-5. After that run this code to start the server
-
-```
-! python3 main-api.py
-```
-
-6. Or this code to keep the program running
-
-```
-! nohup python3 main-api.py &
-```
-
-Thank you :)
-
-# Other Path Repository
-
-### [Machine Learning](https://github.com/diga-tech/Destinology_ML)
-
-### [Mobile Development](https://github.com/rizfirsy-gh/destinology-app)
