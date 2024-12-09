@@ -15,8 +15,8 @@ Before running the application, ensure you have configured the following environ
 ## Installation
 1. **Clone the repository**:
    ```bash
-   git clone <REPOSITORY_URL>
-   cd <FOLDER_NAME>
+   git clone https://github.com/ArteFacto-id/artefacto-cloud-computing.git
+   cd artefacto-cloud-computing
    ```
 
 2. **Install dependencies**:
