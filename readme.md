@@ -8,9 +8,7 @@ This is the second service for the ArteFacto project, its a backend application 
 ## Features
 
 - Retrieve a list of temples.
-- Fetch detailed information about a specific temple.
 - Retrieve a list of artifacts associated with a temple.
-- Fetch detailed information about a specific artifact.
 
 
 ## Installation
@@ -65,16 +63,10 @@ This is the second service for the ArteFacto project, its a backend application 
 - **GET /temples**
   - Retrieves a list of all temples.
 
-- **GET /temples/{templeId}**
-  - Fetches details of a specific temple by its ID.
-
 ### Artifacts
 
 - **GET /temples/{templeId}/artifacts**
   - Retrieves all artifacts associated with a specific temple.
-
-- **GET /temples/{templeId}/artifacts/{artifactId}**
-  - Fetches details of a specific artifact by its ID.
 
 ## Dependencies
 
