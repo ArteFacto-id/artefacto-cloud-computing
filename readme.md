@@ -1,9 +1,9 @@
 
-# Artefacto Cloud Computing
+# Artefacto Backend Service 2
 
 ## Project Overview
 
-Artefacto Cloud Computing is a backend application built using Node.js and the Hapi.js framework. It serves as an API for managing temples and their associated artifacts, enabling users to retrieve information about temples and artifacts via HTTP endpoints.
+This is the second service for the ArteFacto project, its a backend application built using Node.js and the Hapi.js framework. It serves as an API for fetching data about temples and their associated artifacts, enabling users to retrieve information about temples and artifacts via HTTP endpoints. 
 
 ## Features
 
