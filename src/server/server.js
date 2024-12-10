@@ -5,7 +5,7 @@ const validateToken = require('../services/validateToken');
 
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT,
+    port: process.env.ENV_PORT,
     host: process.env.HOST,
     routes: {
       cors: true
