@@ -3,27 +3,27 @@ const db = require('../config/database');
 module.exports = {
   async getOwnedTickets(request, h) {
     try {
-      const userId = request.auth.credentials.id;
+      const userId = request.auth.credentials.userID;
 
       // Mendapatkan semua transaksi user
       const [tickets] = await db.query(`
         SELECT 
-          t.id as transaction_id,
+          t.transactionID as transactionID,
           t.valid_date,
           t.ticket_quantity,
           t.total_price,
           t.payment_method,
           t.status as transaction_status,
-          t.created_at as purchase_date,
+          t.transaction_date as purchase_date,
           tk.price as ticket_price,
           tk.description as ticket_description,
-          tmp.name as temple_name,
-          tmp.location as temple_location
-        FROM transactions t
-        JOIN tickets tk ON t.ticket_id = tk.id
-        JOIN temples tmp ON tk.temple_id = tmp.id
-        WHERE t.user_id = ? AND t.status = 'pending'
-        ORDER BY t.created_at DESC
+          tmp.title as temple_name,
+          tmp.location_url as temple_location
+        FROM Transaction t
+        JOIN Ticket tk ON t.ticketID = tk.ticketID
+        JOIN Temple tmp ON tk.templeID = tmp.templeID
+        WHERE t.userID = ? AND t.status = 'pending'
+        ORDER BY t.transaction_date DESC
       `, [userId]);
 
       return h.response({
@@ -44,13 +44,13 @@ module.exports = {
 
   async getTicketDetails(request, h) {
     try {
-      const userId = request.auth.credentials.id;
+      const userId = request.auth.credentials.userID;
       const { transactionId } = request.params;
 
       // verifikasi transaksi bahwa milik pengguna
       const [transactions] = await db.query(`
-            SELECT * FROM transactions
-            WHERE id = ? AND user_id = ? AND status = 'pending'
+            SELECT * FROM Transaction
+            WHERE transactionID = ? AND userID = ? AND status = 'pending'
         `, [transactionId, userId]);
 
       if (transactions.length === 0) {
@@ -63,25 +63,26 @@ module.exports = {
       // Mendapatkan detail transaksi pengguna
       const [details] = await db.query(`
         SELECT 
-          ot.id as owned_tickets_id,
+          ot.ownedTicketID as owned_ticketsID,
+          ot.userID
           ot.unique_code,
           ot.usage_status,
           t.valid_date,
           t.ticket_quantity,
           t.total_price,
           t.payment_method,
-          t.created_at as purchase_date,
+          t.transaction_date as purchase_date,
           tk.price as ticket_price,
           tk.description as ticket_description,
-          tmp.name as temple_name,
-          tmp.location as temple_location
-        FROM owned_tickets ot
-        JOIN transactions t ON ot.transaction_id = t.id
-        JOIN tickets tk ON ot.ticket_id = tk.id
-        JOIN temples tmp ON tk.temple_id = tmp.id
-        WHERE ot.transaction_id = ?
-        ORDER BY ot.id ASC
-      `, [transactionId]);
+          tmp.title as temple_name,
+          tmp.location_url
+        FROM OwnedTicket ot
+        JOIN Transaction t ON ot.transactionID = t.transactionID
+        JOIN Ticket tk ON ot.ticketID = tk.ticketID
+        JOIN Temple tmp ON tk.templeID = tmp.templeID
+        WHERE ot.userID = ? AND t.transaction_id = ?
+        ORDER BY ot.ownedTicketID ASC
+      `, [userId, transactionId]);
 
       return h.response({
         status: 'success',

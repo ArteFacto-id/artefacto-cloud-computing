@@ -14,7 +14,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/transactions/{id}',
+    path: '/transactions/{transactionID}',
     handler: transactionHandler.getTransactionById,
   },
   {

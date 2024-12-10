@@ -5,7 +5,7 @@ const { token } = require('@hapi/jwt');
 module.exports = {
   async register(request, h) {
     try {
-      const { name, email, password, passConfirmation } = request.payload;
+      const { username, email, password, passConfirmation } = request.payload;
 
       // Memastikan password sesuai
       if (password !== passConfirmation) {
@@ -19,7 +19,7 @@ module.exports = {
 
       // Memastikan email sudah ada
       const [existing] = await db.query(
-        'SELECT id FROM users WHERE email = ?',
+        'SELECT userID FROM User WHERE email = ?',
         [email]
       );
       if (existing.length > 0) {
@@ -37,13 +37,13 @@ module.exports = {
 
       // Memasukan pengguna baru
       const [result] = await db.query(
-        'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-        [name, email, hashedPassword]
+        'INSERT INTO User (username, email, password) VALUES (?, ?, ?)',
+        [username, email, hashedPassword]
       );
 
       // Mendapatkan data pengguna
       const [userData] = await db.query(
-        'SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?',
+        'SELECT userID, username, email, created_at, updated_at FROM User WHERE userID = ?',
         [result.insertId]
       );
 
@@ -73,7 +73,7 @@ module.exports = {
       const { email, password } = request.payload;
 
       // Mendapatkan pengguna dengan email
-      const [users] = await db.query('SELECT * FROM users WHERE email = ?', [
+      const [users] = await db.query('SELECT * FROM User WHERE email = ?', [
         email,
       ]);
       if (users.length === 0) {
@@ -101,7 +101,7 @@ module.exports = {
       // Generate JWT token
       const jwtToken = token.generate(
         {
-          id: user.id,
+          userID: user.userID,
           email: user.email,
         },
         process.env.JWT_SECRET,
@@ -111,8 +111,8 @@ module.exports = {
       );
 
       const userData = {
-        id: user.id,
-        name: user.name,
+        userID: user.userID,
+        username: user.username,
         email: user.email,
         createdAt: user.created_at,
         updateAt: user.updated_at,
@@ -140,10 +140,10 @@ module.exports = {
 
   async getProfile(request, h) {
     try {
-      const userId = request.auth.credentials.id;
+      const userId = request.auth.credentials.userID;
 
       const [users] = await db.query(
-        'SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?',
+        'SELECT userID, username, email, created_at, updated_at FROM User WHERE userID = ?',
         [userId]
       );
 
@@ -176,7 +176,7 @@ module.exports = {
       const { email, password, newPassword, passConfirmation } = request.payload;
 
       // Mendapatkan pengguna dengan email
-      const [isUsers] = await db.query('SELECT * FROM users WHERE email = ?', [
+      const [isUsers] = await db.query('SELECT * FROM User WHERE email = ?', [
         email,
       ]);
       if (isUsers.length === 0) {
@@ -210,7 +210,7 @@ module.exports = {
       }
 
       // Mendapatkan pengguna melalui email
-      const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+      const [users] = await db.query('SELECT * FROM User WHERE email = ?', [email]);
       if (users.length === 0) {
         return h.response({
           status: 'error',
@@ -224,7 +224,7 @@ module.exports = {
 
       // Update password
       await db.query(
-        'UPDATE  users SET password = ? WHERE email = ?',
+        'UPDATE  User SET password = ? WHERE email = ?',
         [hashedPassword, email]
       );
       return h.response({
@@ -244,18 +244,18 @@ module.exports = {
 
   async changeNameProfile(request, h) {
     try {
-      const userId = request.auth.credentials.id;
+      const userId = request.auth.credentials.userID;
       const { newName } = request.payload;
 
       // Update nama pengguna
       await db.query(
-        'UPDATE users SET name = ? WHERE id = ?',
+        'UPDATE User SET username = ? WHERE userID = ?',
         [newName, userId]
       );
 
       // Mendapatkan update data pengguna
       const [users] = await db.query(
-        'SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?',
+        'SELECT userID, username, email, created_at, updated_at FROM User WHERE userID = ?',
         [userId]
       );
 
@@ -278,11 +278,11 @@ module.exports = {
 
   async changeEmailProfile(request, h) {
     try {
-      const userId = request.auth.credentials.id;
+      const userId = request.auth.credentials.userID;
       const { newEmail, password } = request.payload;
 
       // Mendapatkan data pengguna saat ini
-      const [users] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+      const [users] = await db.query('SELECT * FROM User WHERE userID = ?', [userId]);
       if (users.length === 0) {
         return h.response({
           status: 'error',
@@ -300,7 +300,7 @@ module.exports = {
       }
 
       // Check jika email sudah tersedia
-      const [existing] = await db.query('SELECT id FROM users WHERE email = ? AND id != ?', [newEmail, userId]);
+      const [existing] = await db.query('SELECT userID FROM User WHERE email = ? AND userID != ?', [newEmail, userId]);
       if (existing.length > 0) {
         return h.response({
           status: 'error',
@@ -310,13 +310,13 @@ module.exports = {
 
       // Update email pengguna
       await db.query(
-        'UPDATE users SET email = ? WHERE id = ?',
+        'UPDATE User SET email = ? WHERE userID = ?',
         [newEmail, userId]
       );
 
       // Mendapatkan update data pengguna
       const [updatedUser] = await db.query(
-        'SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?', [userId]
+        'SELECT userID, username, email, created_at, updated_at FROM User WHERE userID = ?', [userId]
       );
 
       return h.response({

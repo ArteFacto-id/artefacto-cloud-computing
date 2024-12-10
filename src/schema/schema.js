@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const registerSchema = Joi.object({
-  name: Joi.string().required().messages({
+  username: Joi.string().required().messages({
     'string.empty': 'Nama tidak boleh kosong',
     'any.required': 'Nama wajib diisi'
   }),
@@ -76,7 +76,7 @@ const updateEmailSchema = Joi.object({
 });
 
 const createTransactionSchema = Joi.object({
-  ticketId: Joi.number().required().messages({
+  ticketID: Joi.number().required().messages({
     'number.base': 'ID tiket harus berupa angka',
     'any.required': 'ID tiket wajib diisi'
   }),
@@ -90,7 +90,7 @@ const createTransactionSchema = Joi.object({
     'number.min': 'Jumlah tiket minimal 1',
     'any.required': 'Jumlah tiket wajib diisi'
   }),
-  paymentMethod: Joi.string().valid('bank_transfer', 'credit_card', 'e_wallet').required().messages({
+  paymentMethod: Joi.string().valid('Bank Transfer', 'Credit Card', 'PayPal', 'QRIS').required().messages({
     'string.base': 'Metode pembayaran tidak valid',
     'any.only': 'Metode pembayaran tidak valid',
     'any.required': 'Metode pembayaran wajib diisi'

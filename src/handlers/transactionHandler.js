@@ -4,11 +4,11 @@ const crypto = require('crypto');
 module.exports = {
   async createTransaction(request, h) {
     try {
-      const userId = request.auth.credentials.id;
-      const { ticketId, validDate, ticketQuantity, paymentMethod } = request.payload;
+      const userID = request.auth.credentials.userID;
+      const { ticketID, validDate, ticketQuantity, paymentMethod } = request.payload;
 
       // Mendapatkan detail tiket
-      const [tickets] = await db.query('SELECT * FROM tickets WHERE id = ?', [ticketId]);
+      const [tickets] = await db.query('SELECT * FROM Ticket WHERE ticketID = ?', [ticketID]);
       if (tickets.length === 0) {
         return h.response({
           status: 'error',
@@ -19,10 +19,10 @@ module.exports = {
       const ticket = tickets[0];
 
       // Check ketersediaan tiket
-      if (ticket.status === 'unavailable' || ticket.quota < ticketQuantity) {
+      if (ticket.quota < ticketQuantity) {
         return h.response({
           status: 'error',
-          message: 'Tiket tidak tersedia atau kuota tidak mencukupi'
+          message: 'Tiket tidak tersedia'
         }).code(400);
       }
 
@@ -31,37 +31,37 @@ module.exports = {
 
       // Membuat Transaksi
       const [result] = await db.query(`
-        INSERT INTO transactions
-        (user_id, ticket_id, valid_date, ticket_quantity, total_price, payment_method)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `, [userId, ticketId, validDate, ticketQuantity, totalPrice, paymentMethod]);
+        INSERT INTO Transaction
+        (userID, ticketID, valid_date, ticket_quantity, total_price, payment_method, status)
+        VALUES (?, ?, ?, ?, ?, ?, 'pending')
+      `, [userID, ticketID, validDate, ticketQuantity, totalPrice, paymentMethod]);
 
       // Generate kode unik untuk setiap tiket pengguna
-      const transactionsId = result.insertId;
+      const transactionID = result.insertId;
+
       for (let i = 0; i < ticketQuantity; i++) {
         const uniqueCode = crypto.randomBytes(5).toString('hex');
         await db.query(`
-          INSERT INTO owned_tickets
-          (transaction_id, ticket_id, unique_code, usage_status)
-          VALUES (?, ?, ?, 'unused')  
-        `, [transactionsId, ticketId, uniqueCode]);
+          INSERT INTO OwnedTicket
+          (ownedTicketID, userID, unique_code, usage_status)
+          VALUES (?, ?, ?, 'Unused')  
+        `, [transactionID, userID, uniqueCode]);
       }
 
       // Quota tiket diperbarui
       await db.query(`
-        UPDATE tickets
-        SET quota = quota - ?, status = CASE WHEN (quota - ?) <= 0 THEN 'unavailable' ELSE status END
-        WHERE id = ?
-      `, [ticketQuantity, ticketQuantity, ticketId]);
+        UPDATE Ticket
+        SET quota = quota - ? WHERE ticketID = ? AND quota >= ?
+      `, [ticketQuantity, ticketID, ticketQuantity]);
 
       // Mendapatkan detail transaksi
       const [transactions] = await db.query(`
-        SELECT t.*, u.name as user_name, tk.price as ticket_price, tmp.name as temple_name
-        FROM transactions t
-        JOIN users u ON t.user_id = u.id
-        JOIN tickets tk ON t.ticket_id = tk.id
-        JOIN temples tmp ON tk.temple_id = tmp.id
-        WHERE t.id = ?
+        SELECT t.*, u.username as user_name, tk.price as ticket_price, tmp.title as temple_name
+        FROM Transaction t
+        JOIN User u ON t.userID = u.userID
+        JOIN Ticket tk ON t.ticketID = tk.ticketID
+        JOIN Temple tmp ON tk.templeID = tmp.templeID
+        WHERE t.transactionID = ?
       `, [result.insertId]);
 
       return h.response({
@@ -82,17 +82,17 @@ module.exports = {
 
   async getTransactionById(request, h) {
     try {
-      const { id } = request.params;
-      const userId = request.auth.credentials.id;
+      const { transactionID } = request.params;
+      const userID = request.auth.credentials.userID;
 
       const [transactions] = await db.query(`
-        SELECT t.*, u.name as user_name, tk.price as ticket_price, tmp.name as temple_name
-        FROM transactions t
-        JOIN users u ON t.user_id = u.id
-        JOIN tickets tk ON t.ticket_id = tk.id
-        JOIN temples tmp ON tk.temple_id = tmp.id
-        WHERE t.id = ? AND t.user_id = ?
-      `, [id, userId]);
+        SELECT t.*, u.username as user_name, tk.price as ticket_price, tmp.title as temple_name
+        FROM Transaction t
+        JOIN User u ON t.userID = u.userID
+        JOIN Ticket tk ON t.ticketID = tk.ticketID
+        JOIN Temple tmp ON tk.templeID = tmp.templeID
+        WHERE t.transactionID = ? AND t.userID = ?
+      `, [transactionID, userID]);
 
       if (transactions.length === 0) {
         return h.response({
@@ -119,17 +119,17 @@ module.exports = {
 
   async getUserTransactions(request, h) {
     try {
-      const userId = request.auth.credentials.id;
+      const userID = request.auth.credentials.userID;
 
       const [transactions] = await db.query(`
-        SELECT t.*, u.name as user_name, tk.price as ticket_price, tmp.name as temple_name
-        FROM transactions t
-        JOIN users u ON t.user_id = u.id
-        JOIN tickets tk ON t.ticket_id = tk.id
-        JOIN temples tmp ON tk.temple_id = tmp.id
-        WHERE t.user_id = ?
-        ORDER BY t.created_at DESC
-      `, [userId]);
+        SELECT t.*, u.username as user_name, tk.price as ticket_price, tmp.title as temple_name
+        FROM Transaction t
+        JOIN User u ON t.userID = u.userID
+        JOIN Ticket tk ON t.ticketID = tk.ticketID
+        JOIN Temple tmp ON tk.templeID = tmp.templeID
+        WHERE t.userID = ?
+        ORDER BY t.transaction_date DESC
+      `, [userID]);
 
       return h.response({
         status: 'success',

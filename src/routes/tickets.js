@@ -8,7 +8,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/tickets/{id}',
+    path: '/tickets/{ticketID}',
     handler: ticketHandler.getTicketById,
   }
 ];

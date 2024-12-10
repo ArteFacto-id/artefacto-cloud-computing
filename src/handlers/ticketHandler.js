@@ -4,10 +4,10 @@ module.exports = {
   async getAllTickets(request, h) {
     try {
       const [tickets] = await db.query(`
-        SELECT t.*, tmp.name as temple_name, tmp.location
-        FROM tickets t 
-        JOIN temples tmp ON t.temple_id = tmp.id 
-        WHERE t.status = 'available' AND t.quota > 0
+        SELECT t.*, tmp.title as temple_name, tmp.location_url
+        FROM Ticket t 
+        JOIN Temple tmp ON t.templeID = tmp.templeID 
+        WHERE t.quota > 0
       `);
 
       return h.response({
@@ -28,13 +28,13 @@ module.exports = {
 
   async getTicketById(request, h) {
     try {
-      const { id } = request.params;
+      const { ticketID } = request.params;
       const [tickets] = await db.query(`
-        SELECT t.*, tmp.name as temple_name, tmp.location
-        FROM tickets t 
-        JOIN temples tmp ON t.temple_id = tmp.id 
-        WHERE t.id = ?
-      `, [id]);
+        SELECT t.*, tmp.title as temple_name, tmp.location_url
+        FROM Ticket t 
+        JOIN Temple tmp ON t.templeID = tmp.templeID 
+        WHERE t.ticketID = ?
+      `, [ticketID]);
 
       if (tickets.length === 0) {
         return h.response({
