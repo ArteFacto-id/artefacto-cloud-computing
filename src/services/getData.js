@@ -50,4 +50,63 @@ async function getAllArtifacts(templeId, userId) {
     }
 }
 
-module.exports = { getAllTemples, getAllArtifacts };
+async function updateBookmark(userID, artifactID, is_bookmark) {
+
+    try {
+        // Periksa apakah data sudah ada
+        const [existing] = await db.execute(
+            'SELECT * FROM Bookmark WHERE userID = ? AND artifactID = ?',
+            [userID, artifactID]
+        );
+
+        if (existing.length === 0) {
+            // Data tidak ada, insert record baru
+            await db.execute(
+                'INSERT INTO Bookmark (userID, artifactID, is_bookmark) VALUES (?, ?, ?)',
+                [userID, artifactID, is_bookmark]
+            );
+        } else {
+            // Data sudah ada, update record
+            await db.execute(
+                'UPDATE Bookmark SET is_bookmark = ? WHERE userID = ? AND artifactID = ?',
+                [is_bookmark, userID, artifactID]
+            );
+        }
+
+        return { success: true, message: 'Bookmark updated successfully' };
+    } catch (error) {
+        console.error('Error updating bookmark:', error);
+        throw new Error('Failed to update bookmark');
+    }
+}
+
+async function updateRead(userID, artifactID, is_read) {
+
+    try {
+        // Periksa apakah data sudah ada
+        const [existing] = await db.execute(
+            'SELECT * FROM `Read` WHERE userID = ? AND artifactID = ?',
+            [userID, artifactID]
+        );
+
+        if (existing.length === 0) {
+            // Data tidak ada, insert record baru
+            await db.execute(
+                'INSERT INTO `Read` (userID, artifactID, is_read) VALUES (?, ?, ?)',
+                [userID, artifactID, is_read]
+            );
+        } else {
+            // Data sudah ada, update record
+            await db.execute(
+                'UPDATE `Read` SET is_read = ? WHERE userID = ? AND artifactID = ?',
+                [is_read, userID, artifactID]
+            );
+        }
+
+        return { success: true, message: 'Read status updated successfully' };
+    } catch (error) {
+        console.error('Error updating read status:', error);
+        throw new Error('Failed to update read status');
+    }
+}
+module.exports = { getAllTemples, getAllArtifacts,updateBookmark,updateRead };
