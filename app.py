@@ -3,6 +3,8 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from google.cloud import storage
 from dotenv import load_dotenv
 import os
+import jwt
+
 
 # Load environment variables from .env
 load_dotenv()
@@ -15,6 +17,7 @@ BUCKET_NAME = os.getenv("GCS_BUCKET_NAME")  # Bucket name, e.g., artefactoid
 MODEL_PATH_IN_BUCKET = os.getenv("MODEL_PATH")  # Path in bucket, e.g., model2/latest
 MODEL_DIR = "./model"  # Local directory for downloaded model
 MODEL_PATH = MODEL_DIR  # Local path to the model directory
+JWT_SECRET = os.getenv("JWT_SECRET")
 
 def download_model_from_gcs():
     """Download all files from the specified GCS model path to local storage."""
@@ -47,7 +50,28 @@ if not os.path.exists(MODEL_PATH):
 model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_PATH)
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 
+# Middleware untuk memvalidasi JWT
+def validate_jwt(func):
+    def wrapper(*args, **kwargs):
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return jsonify({"error": "Missing or invalid Authorization header"}), 401
+
+        token = auth_header.split(" ")[1]
+        try:
+            decoded = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            request.user = decoded  # Simpan informasi user ke dalam request
+            return func(*args, **kwargs)
+        except jwt.ExpiredSignatureError:
+            return jsonify({"error": "Token has expired"}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({"error": "Invalid token"}), 401
+
+    wrapper.__name__ = func.__name__
+    return wrapper
+
 @app.route('/translate', methods=['POST'])
+@validate_jwt
 def translate():
     try:
         # Parse input JSON

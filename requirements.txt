@@ -7,3 +7,4 @@ accelerate
 sentencepiece
 google-cloud-storage
 python-dotenv
+pyjwt
