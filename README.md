@@ -44,7 +44,7 @@ User Data Management is a crucial part of our API, designed to give users full c
 - **'/auth/changeEmail'**
   Update the current user's email address.
 
-- **'PUT /users/changePassword'**
+- **'/users/changePassword'**
   Update the current user's password.
 
 ### Others
