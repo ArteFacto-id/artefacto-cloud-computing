@@ -62,11 +62,12 @@ This is the second service for the ArteFacto project, its a backend application 
 
 - **GET /temples**
   - Retrieves a list of all temples.
-
-### Artifacts
-
 - **GET /temples/{templeId}/artifacts**
   - Retrieves all artifacts associated with a specific temple.
+- **GET /bookmark**
+  - Change bookmark status of an artifact.
+- **GET /read**
+  - Change is_read status of an artifact.
 
 ## Dependencies
 
