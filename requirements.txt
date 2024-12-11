@@ -1,0 +1,7 @@
+Flask
+transformers
+torch
+gunicorn
+sacremoses
+accelerate
+sentencepiece
