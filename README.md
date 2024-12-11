@@ -23,10 +23,10 @@ User Data
 
 ### Endpoints
 
-- **'/auth/register'**
+- **'POST /auth/register'**
   Register a new user with email and password, storing user Cloud SQL.
 
-- **'/auth/login'**
+- **'GET /auth/login'**
   Authenticate an existing user, providing access via token-based session management.
 
 ## User Data Management
@@ -35,22 +35,55 @@ User Data Management is a crucial part of our API, designed to give users full c
 
 ### Endpoints
 
-- **'/auth/profile'**
+- **'GET /auth/profile'**
   Retrieve the current user's profile information.
 
-- **'/auth/changeName'**
+- **'PUT /auth/changeName'**
   Update the current user's name.
 
-- **'/auth/changeEmail'**
+- **'PUT /auth/changeEmail'**
   Update the current user's email address.
 
-- **'/users/changePassword'**
+- **'PUT /users/changePassword'**
   Update the current user's password.
 
-## Others
+### Others
 
 - **'/auth/logout'**
   Deleting the user's session token
+
+## Online Ticket Purchase for Users
+
+Online ticket purchase is our API program for ticket purchase feature. This system makes it easy for users to purchase tickets online by selecting available temples and making cashless payments, but for payment methods we currently only have QRIS available and only use dummy data. 
+
+### Endpoints
+
+- **'GET /tickets'**
+  View all available tickets on the temple list.
+  
+- **'GET /tickets/{ticketId}'**
+  View the ticket details available for the selected temple.
+
+- **'POST /transactions'**
+  User fills in the transaction details according to the temple visited.
+
+- **'GET /transactions'**
+  User gets all purchased ticket transactions
+
+- **'GET /transactions/{transactionId}'**
+  User gets all ticket transactions based on the ticket temple purchased.
+
+## Ticket owned by The User
+
+Online ticket purchase is our API program for ticket purchase feature. This system makes it easy for users to purchase tickets online by selecting available temples and making cashless payments, but for payment methods we currently only have QRIS available and only use dummy data. 
+
+### Endpoints
+
+- **'GET /ownedTickets'**
+  view all ticket lists owned by the user according to the ticket purchased.
+  
+- **'GET /ownedTickets/{transactionId}'**
+  View the ticket details owned by the user according to the ticket purchased based on the transaction.
 
 ## Deployment
 
