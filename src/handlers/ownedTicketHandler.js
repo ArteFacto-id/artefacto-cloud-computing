@@ -42,7 +42,7 @@ module.exports = {
     }
   },
 
-  async getTicketDetails(request, h) {
+  async getOwnedTicketDetails(request, h) {
     try {
       const userId = request.auth.credentials.userID;
       const { transactionId } = request.params;
@@ -52,6 +52,8 @@ module.exports = {
             SELECT * FROM Transaction
             WHERE transactionID = ? AND userID = ? AND status = 'pending'
         `, [transactionId, userId]);
+
+      console.log('Transactions:', transactions);
 
       if (transactions.length === 0) {
         return h.response({
@@ -64,25 +66,26 @@ module.exports = {
       const [details] = await db.query(`
         SELECT 
           ot.ownedTicketID as owned_ticketsID,
-          ot.userID
           ot.unique_code,
           ot.usage_status,
+          t.transaction_date,
           t.valid_date,
           t.ticket_quantity,
           t.total_price,
           t.payment_method,
-          t.transaction_date as purchase_date,
+          t.status as transaction_status,
           tk.price as ticket_price,
           tk.description as ticket_description,
           tmp.title as temple_name,
           tmp.location_url
         FROM OwnedTicket ot
-        JOIN Transaction t ON ot.transactionID = t.transactionID
-        JOIN Ticket tk ON ot.ticketID = tk.ticketID
+        JOIN Transaction t ON ot.userID = t.userID
+        JOIN Ticket tk ON t.ticketID = tk.ticketID
         JOIN Temple tmp ON tk.templeID = tmp.templeID
-        WHERE ot.userID = ? AND t.transaction_id = ?
-        ORDER BY ot.ownedTicketID ASC
-      `, [userId, transactionId]);
+        WHERE t.transactionID = ? AND ot.userID = ? 
+      `, [transactionId, userId]);
+
+      console.log('Details:', details);
 
       return h.response({
         status: 'success',
@@ -92,7 +95,7 @@ module.exports = {
         }
       }).code(200);
     } catch (error) {
-      console.error.apply(error);
+      console.error(error);
       return h.response({
         status: 'error',
         message: 'Internal server error'

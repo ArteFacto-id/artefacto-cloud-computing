@@ -9,6 +9,6 @@ module.exports = [
   {
     method: 'GET',
     path: '/ownedTickets/{transactionId}',
-    handler: ownedTicketHandler.getTicketDetails,
+    handler: ownedTicketHandler.getOwnedTicketDetails,
   }
 ];
