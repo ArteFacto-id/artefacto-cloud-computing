@@ -5,3 +5,5 @@ gunicorn
 sacremoses
 accelerate
 sentencepiece
+google-cloud-storage
+python-dotenv

@@ -1,12 +1,49 @@
 from flask import Flask, request, jsonify
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from google.cloud import storage
+from dotenv import load_dotenv
 import os
+
+# Load environment variables from .env
+load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
 
+# GCS bucket and model folder
+BUCKET_NAME = os.getenv("GCS_BUCKET_NAME")  # Bucket name, e.g., artefactoid
+MODEL_PATH_IN_BUCKET = os.getenv("MODEL_PATH")  # Path in bucket, e.g., model2/latest
+MODEL_DIR = "./model"  # Local directory for downloaded model
+MODEL_PATH = MODEL_DIR  # Local path to the model directory
+
+def download_model_from_gcs():
+    """Download all files from the specified GCS model path to local storage."""
+    client = storage.Client()
+    bucket = client.bucket(BUCKET_NAME)
+    blobs = bucket.list_blobs(prefix=MODEL_PATH_IN_BUCKET)
+
+    # Ensure local directory exists
+    os.makedirs(MODEL_PATH, exist_ok=True)
+
+    for blob in blobs:
+        # Skip directories
+        if blob.name.endswith("/"):
+            continue
+
+        # Construct local file path
+        local_file_path = os.path.join(MODEL_DIR, os.path.relpath(blob.name, MODEL_PATH_IN_BUCKET))
+
+        # Create directories for the file if necessary
+        os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
+
+        # Download the file
+        print(f"Downloading {blob.name} to {local_file_path}")
+        blob.download_to_filename(local_file_path)
+
 # Load model and tokenizer
-MODEL_PATH = "./latest"
+if not os.path.exists(MODEL_PATH):
+    download_model_from_gcs()
+
 model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_PATH)
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 
