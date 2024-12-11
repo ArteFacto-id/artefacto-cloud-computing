@@ -8,3 +8,5 @@ sentencepiece
 google-cloud-storage
 python-dotenv
 pyjwt
+cloud-sql-python-connector[pymysql]
+pymysql

@@ -1,2 +1,3 @@
-# Deployment ketiga
-menambahkan JWT validation
+# Deployment keempat
+mengubah endpoint dari /translate menjadi 
+/temples/templeId dan /artifacts/artifactId
