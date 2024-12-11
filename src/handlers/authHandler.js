@@ -101,7 +101,7 @@ module.exports = {
       // Generate JWT token
       const jwtToken = token.generate(
         {
-          userID: user.userID,
+          id: user.userID,
           email: user.email,
         },
         process.env.JWT_SECRET,

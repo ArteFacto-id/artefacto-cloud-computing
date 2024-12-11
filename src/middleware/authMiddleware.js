@@ -24,7 +24,7 @@ const validateToken = async (request, h) => {
       // set credentials
       request.auth = {
         credentials: {
-          userID: payload.userID,
+          userID: payload.id,
           email: payload.email,
         },
       };
