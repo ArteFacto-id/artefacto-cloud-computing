@@ -33,7 +33,7 @@ module.exports = {
       const [result] = await db.query(`
         INSERT INTO Transaction
         (userID, ticketID, valid_date, ticket_quantity, total_price, payment_method, status)
-        VALUES (?, ?, ?, ?, ?, ?, 'pending')
+        VALUES (?, ?, ?, ?, ?, ?, 'Completed')
       `, [userID, ticketID, validDate, ticketQuantity, totalPrice, paymentMethod]);
 
       // Generate kode unik untuk setiap tiket pengguna

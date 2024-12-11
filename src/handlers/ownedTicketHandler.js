@@ -4,7 +4,6 @@ module.exports = {
   async getOwnedTickets(request, h) {
     try {
       const userId = request.auth.credentials.userID;
-      console.log(userId)
 
       // Mendapatkan semua transaksi user
       const [tickets] = await db.query(`
@@ -55,10 +54,8 @@ ORDER BY
       // verifikasi transaksi bahwa milik pengguna
       const [transactions] = await db.query(`
             SELECT * FROM Transaction
-            WHERE transactionID = ? AND userID = ? AND status = 'pending'
+            WHERE transactionID = ? AND userID = ? AND status = 'Completed'
         `, [transactionId, userId]);
-
-      console.log('Transactions:', transactions);
 
       if (transactions.length === 0) {
         return h.response({
@@ -89,8 +86,6 @@ ORDER BY
         JOIN Temple tmp ON tk.templeID = tmp.templeID
         WHERE t.transactionID = ? AND ot.userID = ? 
       `, [transactionId, userId]);
-
-      console.log('Details:', details);
 
       return h.response({
         status: 'success',
