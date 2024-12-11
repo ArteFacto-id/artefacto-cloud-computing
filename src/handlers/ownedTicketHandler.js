@@ -4,26 +4,31 @@ module.exports = {
   async getOwnedTickets(request, h) {
     try {
       const userId = request.auth.credentials.userID;
+      console.log(userId)
 
       // Mendapatkan semua transaksi user
       const [tickets] = await db.query(`
-        SELECT 
-          t.transactionID as transactionID,
-          t.valid_date,
-          t.ticket_quantity,
-          t.total_price,
-          t.payment_method,
-          t.status as transaction_status,
-          t.transaction_date as purchase_date,
-          tk.price as ticket_price,
-          tk.description as ticket_description,
-          tmp.title as temple_name,
-          tmp.location_url as temple_location
-        FROM Transaction t
-        JOIN Ticket tk ON t.ticketID = tk.ticketID
-        JOIN Temple tmp ON tk.templeID = tmp.templeID
-        WHERE t.userID = ? AND t.status = 'pending'
-        ORDER BY t.transaction_date DESC
+SELECT 
+    t.transactionID AS transaction_id,
+    t.valid_date AS valid_date,
+    t.ticket_quantity AS ticket_quantity,
+    t.total_price AS total_price,
+    t.payment_method AS payment_method,
+    t.status AS transaction_status,
+    t.transaction_date AS purchase_date,
+    tk.price AS ticket_price,
+    tk.description AS ticket_description,
+    tmp.title AS temple_name,
+    tmp.location_url AS temple_location
+FROM 
+    Transaction t
+    INNER JOIN Ticket tk ON t.ticketID = tk.ticketID
+    INNER JOIN Temple tmp ON tk.templeID = tmp.templeID
+WHERE 
+    t.userID = ?
+ORDER BY 
+    t.transaction_date DESC;
+
       `, [userId]);
 
       return h.response({
