@@ -23,10 +23,10 @@ User Data
 
 ### Endpoints
 
-- **'POST /auth/register'**
+- **'/auth/register'**
   Register a new user with email and password, storing user Cloud SQL.
 
-- **'GET /auth/login'**
+- **'/auth/login'**
   Authenticate an existing user, providing access via token-based session management.
 
 ## User Data Management
@@ -35,13 +35,13 @@ User Data Management is a crucial part of our API, designed to give users full c
 
 ### Endpoints
 
-- **'GET /auth/profile'**
+- **'/auth/profile'**
   Retrieve the current user's profile information.
 
-- **'PUT /auth/changeName'**
+- **'/auth/changeName'**
   Update the current user's name.
 
-- **'PUT /auth/changeEmail'**
+- **'/auth/changeEmail'**
   Update the current user's email address.
 
 - **'PUT /users/changePassword'**
@@ -58,19 +58,19 @@ Online ticket purchase is our API program for ticket purchase feature. This syst
 
 ### Endpoints
 
-- **'GET /tickets'**
+- **'/tickets'**
   View all available tickets on the temple list.
   
-- **'GET /tickets/{ticketId}'**
+- **'/tickets/{ticketId}'**
   View the ticket details available for the selected temple.
 
-- **'POST /transactions'**
+- **'/transactions'**
   User fills in the transaction details according to the temple visited.
 
-- **'GET /transactions'**
+- **'/transactions'**
   User gets all purchased ticket transactions
 
-- **'GET /transactions/{transactionId}'**
+- **'/transactions/{transactionId}'**
   User gets all ticket transactions based on the ticket temple purchased.
 
 ## Ticket owned by The User
@@ -79,10 +79,10 @@ Online ticket purchase is our API program for ticket purchase feature. This syst
 
 ### Endpoints
 
-- **'GET /ownedTickets'**
+- **'/ownedTickets'**
   view all ticket lists owned by the user according to the ticket purchased.
   
-- **'GET /ownedTickets/{transactionId}'**
+- **'/ownedTickets/{transactionId}'**
   View the ticket details owned by the user according to the ticket purchased based on the transaction.
 
 ## Deployment
