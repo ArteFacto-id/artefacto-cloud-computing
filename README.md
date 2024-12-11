@@ -47,10 +47,43 @@ User Data Management is a crucial part of our API, designed to give users full c
 - **'/users/changePassword'**
   Update the current user's password.
 
-## Others
+### Others
 
 - **'/auth/logout'**
   Deleting the user's session token
+
+## Online Ticket Purchase for Users
+
+Online ticket purchase is our API program for ticket purchase feature. This system makes it easy for users to purchase tickets online by selecting available temples and making cashless payments, but for payment methods we currently only have QRIS available and only use dummy data. 
+
+### Endpoints
+
+- **'/tickets'**
+  View all available tickets on the temple list.
+  
+- **'/tickets/{ticketId}'**
+  View the ticket details available for the selected temple.
+
+- **'/transactions'**
+  User fills in the transaction details according to the temple visited.
+
+- **'/transactions'**
+  User gets all purchased ticket transactions
+
+- **'/transactions/{transactionId}'**
+  User gets all ticket transactions based on the ticket temple purchased.
+
+## Ticket owned by The User
+
+Online ticket purchase is our API program for ticket purchase feature. This system makes it easy for users to purchase tickets online by selecting available temples and making cashless payments, but for payment methods we currently only have QRIS available and only use dummy data. 
+
+### Endpoints
+
+- **'/ownedTickets'**
+  view all ticket lists owned by the user according to the ticket purchased.
+  
+- **'/ownedTickets/{transactionId}'**
+  View the ticket details owned by the user according to the ticket purchased based on the transaction.
 
 ## Deployment
 
@@ -69,4 +102,3 @@ Here is the detailed specification of the compute engine used for deployment.
 ## Run the API in GCP Compute Engine
 
 To set up the environment required by the APIs and AI-Model that will be deployed, follow this step.
-
