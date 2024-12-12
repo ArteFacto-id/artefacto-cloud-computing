@@ -1,0 +1,7 @@
+tensorflow
+flask
+pillow
+gunicorn
+google-cloud-storage
+pyjwt
+shortuuid
