@@ -1,79 +1,86 @@
-# Nama Project Kamu
 
-Repositori ini berisi kumpulan layanan backend dan deployment model machine learning yang digunakan untuk service dari aplikasi ArteFActo. Setiap folder di dalam repositori merepresentasikan layanan atau deployment tertentu.
+# ArteFacto Services 
+
+Member of Cloud Computing
+| Member | Student ID | University |
+|:------:|:----------:|:----------:|
+| Afif Wahyu Adhitya | C183B4KY0154 | Universitas Amikom Yogyakarta |
+| Muhammad Askar Habibulloh | C548B4NY2750 | UIN Sunan Kalijaga Yogyakarta |
+
+This repository contains a collection of backend services and machine learning model deployments used for the ArteFActo application services. Each folder in the repository represents a specific service or deployment.
 
 ---
 
-## Daftar Isi
- [Struktur Folder](#struktur-folder)
-<br> [Cara Menjalankan Proyek](#cara-menjalankan-proyek)
-<br> [Konfigurasi](#konfigurasi)
+## Table of Contents
+ [Folder Structure](#folder-structure)
+<br> [How to Run the Project](#how-to-run-the-project)
+<br> [Configuration](#configuration)
 
 ---
 
-## Struktur Folder
-Repositori ini terdiri dari beberapa folder utama:
+## Folder Structure
+This repository consists of several main folders:
 
 - [backend-service-1](backend-service-1)  
   - Tech Stack: Hapi.js
-  - Layanan backend pertama yang digunakan untuk autentikasi, ticketing, user data management.
+  - The first backend service used for authentication, ticketing, and user data management.
 
 - [backend-service-2](backend-service-2)  
   - Tech Stack: Hapi.js
-  - Layanan backend kedua yang digunakan untuk mendapatkan data terkait artifacts dan temples yang ada.
+  - The second backend service used for retrieving data related to artifacts and temples.
 
 - [ml-model-deployment-1](ml-model-deployment-1)  
   - Tech Stack: Flask, Tensorflow
-  - Deployment model machine learning pertama, digunakan untuk melakukan klasifikasi gambar artifact dibalik fitur scan artifact.
+  - The first machine learning model deployment, used for artifact image classification behind the artifact scan feature.
 
 - [ml-model-deployment-2](ml-model-deployment-2) 
   - Tech Stack: Flask, Transformer
-  - Deployment model machine learning kedua, digunakan untuk melakukan translate dari bahasa inggris ke indonesia sebagai dukungan untuk fitur multilingual.
+  - The second machine learning model deployment, used for translating English to Indonesian as support for the multilingual feature.
 
 ---
 
-## Cara Menjalankan Proyek
-1. **Persiapan**:
-   - Pastikan Node.js dan Python sudah diinstal di sistem kamu.
-   - Clone repository ini:
+## How to Run the Project
+1. **Preparation**:
+   - Make sure Node.js and Python are installed on your system.
+   - Clone this repository:
      ```bash
      git clone https://github.com/ArteFacto-id/artefacto-cloud-computing.git
      cd artefacto-cloud-computing
      ```
 
-2. **Menjalankan Backend Services**:
-   - Masuk ke folder `backend-service-1`:
+2. **Running Backend Services**:
+   - Navigate to the `backend-service-1` folder:
      ```bash
      cd backend-service-1
      npm install
      npm start
      ```
-   - Ulangi langkah di atas untuk `backend-service-2`.
+   - Repeat the above steps for `backend-service-2`.
 
-3. **Menjalankan Model Deployment**:
-   - Masuk ke folder `ml-model-deployment-1`:
+3. **Running Model Deployments**:
+   - Navigate to the `ml-model-deployment-1` folder:
      ```bash
      cd ml-model-deployment-1
      python -m venv venv
-     source venv/bin/activate  # Gunakan `venv\Scripts\activate` di Windows
+     source venv/bin/activate  # Use `venv\Scriptsctivate` on Windows
      pip install -r requirements.txt
      python app.py
      ```
-   - Ulangi langkah di atas untuk `ml-model-deployment-2`.
+   - Repeat the above steps for `ml-model-deployment-2`.
 
 ---
 
-## Konfigurasi
-1. **Variabel Lingkungan**:
-   Pastikan untuk melakukan set-env-vars ketika deploy dengan cloudrun atau sediakan file `.env` sudah disiapkan di setiap folder layanan. Berikut contoh isi file `.env`:
+## Configuration
+1. **Environment Variables**:
+   Make sure to set environment variables when deploying with Cloud Run or provide a `.env` file in each service folder. Below is an example of a `.env` file content:
    ```env
    PORT=3001
    DATABASE_URL=your_database_url
    API_KEY=your_api_key
    ```
 
-2. **Integrasi dengan Cloud**:
-   - Gunakan Google Cloud Storage untuk penyimpanan file.
-   - Sangat direkomendasika untuk menggunakan Google Cloud SQL untuk database
+2. **Cloud Integration**:
+   - Use Google Cloud Storage for file storage.
+   - It is highly recommended to use Google Cloud SQL for the database.
 
 ---
