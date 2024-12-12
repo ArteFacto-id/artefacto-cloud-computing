@@ -10,6 +10,51 @@ Member of Cloud Computing
 
 This API is built using **REST API** to ensure flexibility and scalability in data management. We implement JWT (JSON Web Token) as the main authentication system to ensure the security and reliability of authorization. With the token-based method, this API enables fast and efficient user validation for each request.
 
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/ArteFacto-id/artefacto-cloud-computing.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd artefacto-cloud-computing
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Create a `.env` file in the root directory and configure the following variables:
+
+   ```env
+   PORT=your_server_port
+   HOST=your_server_host
+   DB_HOST=your_database_host
+   DB_USER=your_database_user
+   DB_PASSWORD=your_database_password
+   DB_NAME=your_database_name
+   DB_PORT=your_database_port
+   JWT_SECRET=your_jwt_secret
+   ```
+
+5. Start the server:
+
+   ```bash
+   npm start
+   ```
+
+6. Use `nodemon` for development mode:
+
+   ```bash
+   npm run dev
+   ```
+
 ## User Authentication
 
 A key component of our authentication process is the implementation of JWT (JSON Web Token) for secure management of user authorizations and sessions. This process is designed to securely handle user credentials using password hashing before they are saved to the database. This authentication system is powered by MySQL, which stores user data in a structured manner, ensuring security and high performance for application needs. The following are the details of the user data stored in the MySQL database:
@@ -84,3 +129,19 @@ Online ticket purchase is our API program for ticket purchase feature. This syst
   
 - **'/ownedTickets/{transactionId}'**
   View the ticket details owned by the user according to the ticket purchased based on the transaction.
+
+## Dependencies
+
+- **@hapi/hapi**: Hapi.js framework for building the server.
+- **@hapi/jwt**: Middleware for handling JWT authentication.
+- **dotenv**: Environment variable management.
+- **mysql2**: MySQL database driver.
+
+### Dev Dependencies
+
+- **eslint**: Linter for maintaining code quality.
+- **nodemon**: Development tool for automatic server restarts.
+
+## License
+
+This project is licensed under the [License.](LICENSE)
