@@ -143,4 +143,4 @@ The following libraries are used in the application:
 ---
 
 ## License
-This application is licensed under the [MIT License](LICENSE).
+This application is licensed under the [License](LICENSE).
