@@ -52,7 +52,7 @@ This API is built using **REST API** to ensure flexibility and scalability in da
 6. Use `nodemon` for development mode:
 
    ```bash
-   npm run dev
+   npm run start-dev
    ```
 
 ## User Authentication
