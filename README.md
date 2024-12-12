@@ -7,7 +7,7 @@ Member of Cloud Computing
 | Afif Wahyu Adhitya | C183B4KY0154 | Universitas Amikom Yogyakarta |
 | Muhammad Askar Habibulloh | C548B4NY2750 | UIN Sunan Kalijaga Yogyakarta |
 
-This repository contains a collection of backend services and machine learning model deployments used for the ArteFActo application services. Each folder in the repository represents a specific service or deployment.
+This repository contains a collection of backend services and machine learning model deployments used for the ArteFacto application services. Each folder in the repository represents a specific service or deployment.
 
 ---
 
