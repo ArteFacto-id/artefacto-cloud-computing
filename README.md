@@ -83,7 +83,7 @@ User Data Management is a crucial part of our API, designed to give users full c
 - **GET '/auth/profile'**
   Retrieve the current user's profile information.
 
-- ** PUT '/auth/changeName'**
+- **PUT '/auth/changeName'**
   Update the current user's name.
 
 - **PUT '/auth/changeEmail'**
