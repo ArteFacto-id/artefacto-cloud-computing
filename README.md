@@ -15,6 +15,7 @@ This repository contains a collection of backend services and machine learning m
  [Folder Structure](#folder-structure)
 <br> [How to Run the Project](#how-to-run-the-project)
 <br> [Configuration](#configuration)
+<br> [Architecture](#architecture)
 
 ---
 
@@ -84,3 +85,6 @@ This repository consists of several main folders:
    - It is highly recommended to use Google Cloud SQL for the database.
 
 ---
+## Architecture
+This application has been deployed using the architecture shown in the image, but it is not restricted to being deployed with other architectural arrangements.
+![Cloud Architecture](Architecture.png)
