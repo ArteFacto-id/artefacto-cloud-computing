@@ -84,21 +84,3 @@ Online ticket purchase is our API program for ticket purchase feature. This syst
   
 - **'/ownedTickets/{transactionId}'**
   View the ticket details owned by the user according to the ticket purchased based on the transaction.
-
-## Deployment
-
-**are deployed on Google Cloud Platform Compute Engine.**
-Here is the detailed specification of the compute engine used for deployment.
-
-|     Item     |   Specification    |
-| :----------: | :----------------: |
-|     Type     |      Instance      |
-|     Zone     | asia-southeast2-a  |
-| Machine type |     e2-medium      |
-| CPU Platform |  Intel Broadwell   |
-| Architecture |       x86/64       |
-|  Boot Disk   | debian-11-bullseye |
-
-## Run the API in GCP Compute Engine
-
-To set up the environment required by the APIs and AI-Model that will be deployed, follow this step.
