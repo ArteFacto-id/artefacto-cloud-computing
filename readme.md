@@ -83,4 +83,4 @@ This is the second service for the ArteFacto project, its a backend application 
 
 ## License
 
-This project is licensed under the [MIT License.](LICENSE)
+This project is licensed under the [License.](LICENSE)
