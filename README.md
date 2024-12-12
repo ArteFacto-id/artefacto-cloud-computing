@@ -135,6 +135,7 @@ Online ticket purchase is our API program for ticket purchase feature. This syst
 - **@hapi/hapi**: Hapi.js framework for building the server.
 - **@hapi/jwt**: Middleware for handling JWT authentication.
 - **dotenv**: Environment variable management.
+- **bcrypt**: Store user passwords securely
 - **mysql2**: MySQL database driver.
 
 ### Dev Dependencies
