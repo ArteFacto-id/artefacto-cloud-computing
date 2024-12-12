@@ -1,1 +1,0 @@
-# artefacto-cloud-computing
