@@ -68,10 +68,10 @@ User Data
 
 ### Endpoints
 
-- **'/auth/register'**
+- **POST '/auth/register'**
   Register a new user with email and password, storing user Cloud SQL.
 
-- **'/auth/login'**
+- **POST '/auth/login'**
   Authenticate an existing user, providing access via token-based session management.
 
 ## User Data Management
@@ -80,16 +80,16 @@ User Data Management is a crucial part of our API, designed to give users full c
 
 ### Endpoints
 
-- **'/auth/profile'**
+- **GET '/auth/profile'**
   Retrieve the current user's profile information.
 
-- **'/auth/changeName'**
+- ** PUT '/auth/changeName'**
   Update the current user's name.
 
-- **'/auth/changeEmail'**
+- **PUT '/auth/changeEmail'**
   Update the current user's email address.
 
-- **'/users/changePassword'**
+- **PUT '/users/changePassword'**
   Update the current user's password.
 
 ### Others
@@ -103,19 +103,19 @@ Online ticket purchase is our API program for ticket purchase feature. This syst
 
 ### Endpoints
 
-- **'/tickets'**
+- **GET '/tickets'**
   View all available tickets on the temple list.
   
-- **'/tickets/{ticketId}'**
+- **GET '/tickets/{ticketId}'**
   View the ticket details available for the selected temple.
 
-- **'/transactions'**
+- **POST '/transactions'**
   User fills in the transaction details according to the temple visited.
 
-- **'/transactions'**
+- **GET '/transactions'**
   User gets all purchased ticket transactions
 
-- **'/transactions/{transactionId}'**
+- **GET '/transactions/{transactionId}'**
   User gets all ticket transactions based on the ticket temple purchased.
 
 ## Ticket owned by The User
@@ -124,10 +124,10 @@ Online ticket purchase is our API program for ticket purchase feature. This syst
 
 ### Endpoints
 
-- **'/ownedTickets'**
+- **GET '/ownedTickets'**
   view all ticket lists owned by the user according to the ticket purchased.
   
-- **'/ownedTickets/{transactionId}'**
+- **GET '/ownedTickets/{transactionId}'**
   View the ticket details owned by the user according to the ticket purchased based on the transaction.
 
 ## Dependencies
