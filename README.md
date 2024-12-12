@@ -8,7 +8,7 @@ Member of Cloud Computing
 
 ## About Our API
 
-This API is built using **REST API** to ensure flexibility and scalability in data management. We implement JWT (JSON Web Token) as the main authentication system to ensure the security and reliability of authorization. With the token-based method, this API enables fast and efficient user validation for each request.
+This is the first service for the ArteFacto project, its a backend application built using Node.js and the Hapi.js framework. This API is built using **REST API** to ensure flexibility and scalability in data management. We implement JWT (JSON Web Token) as the main authentication system to ensure the security and reliability of authorization. With the token-based method, this API enables fast and efficient user validation for each request.
 
 ## Installation
 
